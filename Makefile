@@ -24,8 +24,8 @@ TARGETS=\
 all: $(TARGETS)
 	cp -r img styles js out
 	cp raw/styles/*.css out/styles
-	cp "$$(ruby -r'asciidoctor' -r'asciidoctor/tabs' -e 'puts ::Asciidoctor::Tabs::Docinfo::Style::DEFAULT_STYLESHEET_FILE')" out/styles/asciidoctor-tabs.css
-	cp "$$(ruby -r'asciidoctor' -r'asciidoctor/tabs' -e 'puts ::Asciidoctor::Tabs::Docinfo::Behavior::JAVASCRIPT_FILE')" out/js/asciidoctor-tabs.js
+	cp "$$(bundle exec ruby -e "require 'asciidoctor'" -e "require 'asciidoctor/tabs'" -e 'puts ::Asciidoctor::Tabs::Docinfo::Style::DEFAULT_STYLESHEET_FILE')" out/styles/asciidoctor-tabs.css
+	cp "$$(bundle exec ruby -e "require 'asciidoctor'" -e "require 'asciidoctor/tabs'" -e 'puts ::Asciidoctor::Tabs::Docinfo::Behavior::JAVASCRIPT_FILE')" out/js/asciidoctor-tabs.js
 	cp ksy_reference.html out
 	cp -r docson/public/docson.js docson/public/lib/ out/js
 	cp -r docson/public/templates out
@@ -35,7 +35,7 @@ out/%.html: raw/%.html tmpl/navbar.html postprocess-html
 	./postprocess-html $< $@
 
 raw/%.html: %.adoc
-	TZ=UTC asciidoctor -r asciidoctor-tabs -a stylesheet! -a docinfo=shared,private -a nofooter -a source-highlighter=pygments -a pygments-style=default -a linkcss -a copycss -a stylesdir=styles -a scriptsdir=js -D raw $<
+	TZ=UTC bundle exec asciidoctor -r asciidoctor-tabs -a stylesheet! -a docinfo=shared,private -a nofooter -a source-highlighter=pygments -a pygments-style=default -a linkcss -a copycss -a stylesdir=styles -a scriptsdir=js -D raw $<
 
 out/svg/%.svg: dot/%.dot
 	mkdir -p out/svg
